@@ -1,0 +1,2 @@
+This is a test of Foxel 1.0
+As of now, Foxel can encode up to 256 characters but soon more space will be added!
