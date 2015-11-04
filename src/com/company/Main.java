@@ -27,9 +27,11 @@ public class Main {
             message = new int[dimension][dimension][3];
 
             //message[][][] population start
-            message[0][0][0] = messageSize;
-            message[0][0][1] = dimension;
+            message[0][0][0] = messageSize / 256;
+            message[0][0][1] = messageSize % 256;
             message[0][0][2] = dimension;
+
+//            System.out.println("{" + message[0][0][0] + " " + message[0][0][1] + " " + message[0][0][2] + "} ");
 
             for (int y = 0; y < dimension; y++) {
                 for (int x = 0; x < dimension; x++) {
@@ -78,11 +80,14 @@ public class Main {
     public static void decode(String filename) {
         try {
             BufferedImage input = ImageIO.read(new File(filename));
-            int messageLength = input.getRGB(0, 0) >> 16 & 0xFF, dimensions = input.getRGB(0, 0) & 0xFF, arrayPop = 0;
+            int messageSize = (input.getRGB(0, 0) >> 16 & 0xFF)*256 + (input.getRGB(0, 0) >> 8 & 0xFF)-1;
+            int dimension = input.getRGB(0, 0) & 0xFF, arrayPop = 0;
 
-            for (int y = 0; y < dimensions; y++) {
-                for (int x = 0; x < dimensions; x++) {
-                    if (arrayPop <= messageLength && arrayPop != 0) {
+//            System.out.println(messageSize);
+
+            for (int y = 0; y < dimension; y++) {
+                for (int x = 0; x < dimension; x++) {
+                    if (arrayPop <= messageSize && arrayPop != 0) {
                         System.out.print((char) (input.getRGB(x, y) >> 16 & 0xFF));
                         System.out.print((char) (input.getRGB(x, y) >> 8 & 0xFF));
                         System.out.print((char) (input.getRGB(x, y) & 0xFF));
