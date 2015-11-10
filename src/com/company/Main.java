@@ -11,8 +11,10 @@ public class Main {
         //args[1] = file to encode/decode
         if (args[0].equalsIgnoreCase("encode"))
             encode(args[1]);
-        else if (args[0].equalsIgnoreCase("decode"))
-            decode(args[1]);
+        else if (args[0].equalsIgnoreCase("decode")) {
+            if (args.length == 2) decode(args[1], "decoded.txt");
+            else decode(args[1], args[2]);
+        }
     }
 
     public static void encode(String filename) {
@@ -77,26 +79,37 @@ public class Main {
         }
     }
 
-    public static void decode(String filename) {
+    public static void decode(String filename, String endFilename) {
         try {
             BufferedImage input = ImageIO.read(new File(filename));
-            int messageSize = (input.getRGB(0, 0) >> 16 & 0xFF)*256 + (input.getRGB(0, 0) >> 8 & 0xFF)-1;
+            File endFile = new File(endFilename);
+            FileOutputStream fop = new FileOutputStream(endFile);
+            int messageSize = (input.getRGB(0, 0) >> 16 & 0xFF) * 256 + (input.getRGB(0, 0) >> 8 & 0xFF) - 1;
             int dimension = input.getRGB(0, 0) & 0xFF, arrayPop = 0;
-
-//            System.out.println(messageSize);
+            String message = "";
 
             for (int y = 0; y < dimension; y++) {
                 for (int x = 0; x < dimension; x++) {
                     if (arrayPop <= messageSize && arrayPop != 0) {
-                        System.out.print((char) (input.getRGB(x, y) >> 16 & 0xFF));
-                        System.out.print((char) (input.getRGB(x, y) >> 8 & 0xFF));
-                        System.out.print((char) (input.getRGB(x, y) & 0xFF));
+//                        System.out.print((char) (input.getRGB(x, y) >> 16 & 0xFF));
+                        message += ((char) (input.getRGB(x, y) >> 16 & 0xFF));
+//                        System.out.print((char) (input.getRGB(x, y) >> 8 & 0xFF));
+                        message += ((char) (input.getRGB(x, y) >> 8 & 0xFF));
+//                        System.out.print((char) (input.getRGB(x, y) & 0xFF));
+                        message += ((char) (input.getRGB(x, y) & 0xFF));
                         arrayPop += 3;
                     } else {
                         arrayPop += 3;
                     }
                 }
             }
+
+            byte[] messageInBytes = message.getBytes();
+            fop.write(messageInBytes);
+            fop.flush();
+            fop.close();
+
+//            System.out.println(message);
 
             System.out.println("\nDecode completed");
 
