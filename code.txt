@@ -1,6 +1,6 @@
-This is a test of Foxel 1.2
+This is a test of Foxel 1.3
 
-I'm pretty sure this new version can support much more space. Shall we see?
+I'm pretty sure this new version can support even more space. Shall we see?
 
 Lorem ipsum dolor sit amet, fugit labore dissentias cu pro, ne est harum audiam inimicus. Eum et nisl regione assentior, ad facete incorrupte pro. Vix ut quas eripuit complectitur, ius et brute iuvaret, eam et laudem rationibus. Esse vulputate duo id, diam omnium nominati ut his.
 
@@ -244,4 +244,4 @@ Sit ne menandri tincidunt, at his quidam aliquam tibique. Enim error graecis ad 
 
 Wowza that's awesome.
 
-I guess we have support for 65,535 (256*255 + 255) characters. Nice.
+I guess we have support for 16,777,215 (256*256*255 + 256*255 + 255) characters. Nice.

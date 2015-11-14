@@ -29,9 +29,9 @@ public class Main {
             message = new int[dimension][dimension][3];
 
             //message[][][] population start
-            message[0][0][0] = messageSize / 256;
-            message[0][0][1] = messageSize % 256;
-            message[0][0][2] = dimension;
+            message[0][0][0] = messageSize / (256 * 256);
+            message[0][0][1] = (messageSize % (256 * 256)) / 256;
+            message[0][0][2] = messageSize % 256;
 
 //            System.out.println("{" + message[0][0][0] + " " + message[0][0][1] + " " + message[0][0][2] + "} ");
 
@@ -40,9 +40,9 @@ public class Main {
                     if (arrayPop < messageSize && arrayPop != 0) {
                         message[y][x][0] = fStream.read();
                         temp1 = fStream.read();
-                        message[y][x][1] = (temp1 != -1) ? temp1 : 32;
+                        message[y][x][1] = (temp1 != -1) ? temp1 : 0;
                         temp2 = fStream.read();
-                        message[y][x][2] = (temp2 != -1) ? temp2 : 32;
+                        message[y][x][2] = (temp2 != -1) ? temp2 : 0;
                         arrayPop += 3;
 //                        System.out.print("{" + message[y][x][0] + " " + message[y][x][1] + " " + message[y][x][2] + "} ");
                     } else {
@@ -84,8 +84,10 @@ public class Main {
             BufferedImage input = ImageIO.read(new File(filename));
             File endFile = new File(endFilename);
             FileOutputStream fop = new FileOutputStream(endFile);
-            int messageSize = (input.getRGB(0, 0) >> 16 & 0xFF) * 256 + (input.getRGB(0, 0) >> 8 & 0xFF) - 1;
-            int dimension = input.getRGB(0, 0) & 0xFF, arrayPop = 0;
+            int messageSize = (input.getRGB(0, 0) >> 16 & 0xFF) * 256 * 256 + (input.getRGB(0, 0) >> 8 & 0xFF) * 256 + (input.getRGB(0, 0) & 0xFF) - 1;
+            int dimension = input.getHeight();
+            int arrayPop = 0;
+//            System.out.println(messageSize);
             String message = "";
 
             for (int y = 0; y < dimension; y++) {
@@ -93,11 +95,15 @@ public class Main {
                     if (arrayPop <= messageSize && arrayPop != 0) {
 //                        System.out.print((char) (input.getRGB(x, y) >> 16 & 0xFF));
                         message += ((char) (input.getRGB(x, y) >> 16 & 0xFF));
+                        arrayPop++;
 //                        System.out.print((char) (input.getRGB(x, y) >> 8 & 0xFF));
-                        message += ((char) (input.getRGB(x, y) >> 8 & 0xFF));
+                        if (arrayPop <= messageSize)
+                            message += ((char) (input.getRGB(x, y) >> 8 & 0xFF));
+                        arrayPop++;
 //                        System.out.print((char) (input.getRGB(x, y) & 0xFF));
-                        message += ((char) (input.getRGB(x, y) & 0xFF));
-                        arrayPop += 3;
+                        if (arrayPop <= messageSize)
+                            message += ((char) (input.getRGB(x, y) & 0xFF));
+                        arrayPop++;
                     } else {
                         arrayPop += 3;
                     }
